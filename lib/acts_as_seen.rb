@@ -1,5 +1,5 @@
 module ActsAsSeen
-  def self.included?(base)
+  def self.included(base)
     base.extend ActsAsSeenMethods
   end
   
