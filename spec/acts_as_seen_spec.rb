@@ -16,19 +16,29 @@ describe ActsAsSeen do
   end
   
   it "should let a foo be seen by a user" do
-    lambda { @foo.seen_by(@user) }.should change(Sight, :count).by(1)
+    lambda { @foo.seen_by(@user) }.should change(@user.sights, :count).by(1)
   end
   
   it "should let a user see a foo " do
-    lambda { @user.saw(@foo) }.should change(Sight, :count).by(1)
+    lambda { @user.saw(@foo) }.should change(@user.sights, :count).by(1)
+  end
+  
+  it "should let a user see many foos" do
+    lambda { @user.saw(@foo) }.should change(@user.sights, :count).by(1)
+    lambda { @user.saw(Foo.create(valid_foo_attributes)) }.should change(@user.sights, :count).by(1)
+  end
+  
+  it "should let a foo be seen by many users" do
+    lambda { @foo.seen_by(@user) }.should change(@foo.sights, :count).by(1)
+    lambda { @foo.seen_by(User.create(valid_user_attributes)) }.should change(@foo.sights, :count).by(1)
   end
   
   it "should not create a sight where one already exists (user saw a foo)" do
-    lambda { @user.saw(@foo); @user.saw(@foo) }.should change(Sight, :count).by(1)
+    lambda { @user.saw(@foo); @user.saw(@foo) }.should change(@user.sights, :count).by(1)
   end
   
   it "should not create a sight where one already exists (foo seen by a user)" do
-    lambda { @foo.seen_by(@user); @foo.seen_by(@user) }.should change(Sight, :count).by(1)
+    lambda { @foo.seen_by(@user); @foo.seen_by(@user) }.should change(@user.sights, :count).by(1)
   end
   
   it "should have a timestamp" do
