@@ -9,7 +9,7 @@ module ActsAsSeen
       end
 
       def declare_acts_as_viewer_relationships
-        has_many :sights, :class_name => @sightable_name, :foreign_key => "viewer_id"
+        has_many :sights, :foreign_key => "viewer_id"
       end
     end
 
