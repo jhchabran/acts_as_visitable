@@ -22,5 +22,13 @@ class User < ActiveRecord::Base
 end
 
 class Foo < ActiveRecord::Base
-  
+  acts_as_seen :by => :users
+end
+
+def valid_user_attributes
+  {:login => 'Mario'}
+end
+
+def valid_foo_attributes
+  {:message => 'entertaining message !'}
 end
