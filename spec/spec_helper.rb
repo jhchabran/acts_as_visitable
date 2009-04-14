@@ -25,6 +25,13 @@ class Foo < ActiveRecord::Base
   acts_as_seen :by => :users
 end
 
+class Sight < ActiveRecord::Base
+  belongs_to :sightable, :polymorphic => true
+end
+
+class SomethingElse < ActiveRecord::Base
+end
+
 def valid_user_attributes
   {:login => 'Mario'}
 end

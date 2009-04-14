@@ -8,4 +8,10 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :foo_id
     t.string :message
   end
+  
+  create_table "sights", :force => true do |t|
+    t.integer :sight_id
+    t.string :sight_type
+    t.datetime :seen_at
+  end
 end
