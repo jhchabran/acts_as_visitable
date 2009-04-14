@@ -1,1 +1,7 @@
-I'll write a README when there will be something to play with.
+Acts As Seen should be barely usable at this state.
+
+TODO 
+- more named scopes
+- destroying stuff is not handled correctly ( default behavior )
+- no configuration is available ( you might already have a sight model )
+- generators for migrations ( creating the Sight model )
