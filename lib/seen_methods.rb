@@ -2,14 +2,21 @@ module ActsAsSeen
   module SeenMethods
     module ClassMethods
       protected
-      def read_acts_as_seen_options(opts)
+      def read_options(opts)
         raise unless opts[:by]
         write_inheritable_attribute :seen_by_model_name, opts[:by].to_s
         write_inheritable_attribute :seen_by_model_klass, self.seen_by_model_name.classify.constantize
+        
+        declare_relationships
+        declare_named_scopes
       end
 
-      def declare_acts_as_seen_relationships
+      def declare_relationships
         has_many :sights, :as => :sightable
+      end
+      
+      def declare_named_scopes
+        named_scope "seen_by_#{self.seen_by_model_name}", :include => :sights, :conditions => { 'sights.sightable_type' => self.name }
       end
     end
 

@@ -16,8 +16,7 @@ module ActsAsSeen
       class_inheritable_reader :seen_by_model_name
       class_inheritable_reader :seen_by_model_klass
       
-      read_acts_as_seen_options(opts)
-      declare_acts_as_seen_relationships
+      read_options(opts)
     end
     
     def acts_as_viewer(opts={})
@@ -27,8 +26,7 @@ module ActsAsSeen
       class_inheritable_reader :observed_models_name
       class_inheritable_reader :observed_models_klass
       
-      read_acts_as_viewer_options(opts)
-      declare_acts_as_viewer_relationships
+      read_options(opts)
     end
   end
 end

@@ -2,14 +2,23 @@ module ActsAsSeen
   module ViewerMethods
     module ClassMethods
       protected
-      def read_acts_as_viewer_options(opts)
+      def read_options(opts)
         raise ArgumentError unless opts[:of]
         write_inheritable_attribute :observed_models_name, Array(opts[:of]).collect(&:to_s)
         write_inheritable_attribute :observed_models_klass, self.observed_models_name.collect { |e| e.classify.constantize }
+        
+        declare_relationships
+        declare_named_scopes
       end
 
-      def declare_acts_as_viewer_relationships
+      def declare_relationships
         has_many :sights, :foreign_key => "viewer_id"
+      end
+      
+      def declare_named_scopes
+        self.observed_models_name.each do |model|
+          named_scope "seen_#{model}", :include => :sights, :conditions => { 'sights.sightable_type' => model.classify }
+        end
       end
     end
 

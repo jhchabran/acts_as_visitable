@@ -61,4 +61,14 @@ describe ActsAsSeen do
     lambda { @user.saw(SomethingElse.new) }.should raise_error
   end
   
+  it "User should have named scopes to load seen foos and bars" do
+    User.seen_foos.should_not be_empty
+    User.seen_bars.should_not be_empty
+  end
+  
+  it "Foo and Bar should have named scopes to load Users that sawed them" do
+    Foo.seen_by_users.should_not be_empty
+    Bar.seen_by_users.should_not be_empty
+  end
+  
 end
