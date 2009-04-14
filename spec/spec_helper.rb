@@ -17,8 +17,11 @@ load(File.dirname(__FILE__) + '/schema.rb')
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require File.join(File.dirname(__FILE__), '..', 'init')
 
+class Foo < ActiveRecord::Base
+end
+
 class User < ActiveRecord::Base
-  
+  acts_as_viewer :of => :foos
 end
 
 class Foo < ActiveRecord::Base
@@ -27,6 +30,9 @@ end
 
 class Sight < ActiveRecord::Base
   belongs_to :sightable, :polymorphic => true
+  belongs_to :viewer, :class_name => "User", :foreign_key => "viewer_id"
+  
+  include ActsAsSeen::SightMethods
 end
 
 class SomethingElse < ActiveRecord::Base
