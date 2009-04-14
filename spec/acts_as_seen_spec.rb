@@ -16,15 +16,23 @@ describe ActsAsSeen do
   end
   
   it "should let a foo be seen by a user" do
-    @foo.seen_by(@user)
+    lambda { @foo.seen_by(@user) }.should change(Sight, :count).by(1)
   end
   
   it "should let a user see a foo " do
-    @user.saw(@foo)
+    lambda { @user.saw(@foo) }.should change(Sight, :count).by(1)
+  end
+  
+  it "should not create a sight where one already exists (user saw a foo)" do
+    lambda { @user.saw(@foo); @user.saw(@foo) }.should change(Sight, :count).by(1)
+  end
+  
+  it "should not create a sight where one already exists (foo seen by a user)" do
+    lambda { @foo.seen_by(@user); @foo.seen_by(@user) }.should change(Sight, :count).by(1)
   end
   
   it "should not let a user see something which is not a foo" do
-    lamda { @user.saw(SomethingElse.new) }.should raise_error
+    lambda { @user.saw(SomethingElse.new) }.should raise_error
   end
   
 end
