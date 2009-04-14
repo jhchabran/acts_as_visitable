@@ -31,6 +31,15 @@ describe ActsAsSeen do
     lambda { @foo.seen_by(@user); @foo.seen_by(@user) }.should change(Sight, :count).by(1)
   end
   
+  it "should have a timestamp" do
+    @user.saw(@foo).seen_at.should_not be_nil
+  end
+  
+  it "should update time when saw again" do
+    # waiting for one second in specs is tiring 
+    # @user.saw(@foo).tap{ sleep 1 }.seen_at.should_not be_eql(@user.saw(@foo).seen_at)
+  end
+  
   it "should not let a user see something which is not a foo" do
     lambda { @user.saw(SomethingElse.new) }.should raise_error
   end
