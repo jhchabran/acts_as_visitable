@@ -33,6 +33,13 @@ describe ActsAsSeen do
     lambda { @foo.seen_by(User.create(valid_user_attributes)) }.should change(@foo.sights, :count).by(1)
   end
   
+  it "should let a user see a Foo and a Lambda" do
+    lambda {
+      @user.saw(@foo)
+      @user.saw(Bar.create(:size => 3))
+    }.should change(Sight, :count).by(2)
+  end
+  
   it "should not create a sight where one already exists (user saw a foo)" do
     lambda { @user.saw(@foo); @user.saw(@foo) }.should change(@user.sights, :count).by(1)
   end

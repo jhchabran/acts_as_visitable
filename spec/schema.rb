@@ -7,6 +7,10 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :message
   end
   
+  create_table "bars", :force => true do |t|
+    t.integer :size
+  end
+  
   create_table "sights", :force => true do |t|
     t.string :sightable_type
     t.integer :sightable_id

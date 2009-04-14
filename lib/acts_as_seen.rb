@@ -24,8 +24,8 @@ module ActsAsSeen
       include SharedMethods
       include ViewerMethods
       
-      class_inheritable_reader :observed_model_name
-      class_inheritable_reader :observed_model_klass
+      class_inheritable_reader :observed_models_name
+      class_inheritable_reader :observed_models_klass
       
       read_acts_as_viewer_options(opts)
       declare_acts_as_viewer_relationships

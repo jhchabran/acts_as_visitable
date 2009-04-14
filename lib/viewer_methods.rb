@@ -4,8 +4,8 @@ module ActsAsSeen
       protected
       def read_acts_as_viewer_options(opts)
         raise ArgumentError unless opts[:of]
-        write_inheritable_attribute :observed_model_name, opts[:of].to_s
-        write_inheritable_attribute :observed_model_klass, self.observed_model_name.classify.constantize
+        write_inheritable_attribute :observed_models_name, Array(opts[:of]).collect(&:to_s)
+        write_inheritable_attribute :observed_models_klass, self.observed_models_name.collect { |e| e.classify.constantize }
       end
 
       def declare_acts_as_viewer_relationships
@@ -24,12 +24,12 @@ module ActsAsSeen
         object_is_sightable(object) || class_is_sightable(object)
       end
 
-      def object_is_sightable?(object)
-        object.class == self.observed_model_klass
+      def class_is_sightable?(klass)
+        self.observed_models_klass.include? klass
       end
 
-      def class_is_sightable?(klass)
-        klass == self.observed_model_klass
+      def object_is_sightable?(object)
+        self.observed_models_klass.include? object.class
       end
     end
     

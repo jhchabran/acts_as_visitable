@@ -20,11 +20,18 @@ require File.join(File.dirname(__FILE__), '..', 'init')
 class Foo < ActiveRecord::Base
 end
 
+class Bar < ActiveRecord::Base
+end
+
 class User < ActiveRecord::Base
-  acts_as_viewer :of => :foos
+  acts_as_viewer :of => [:foos, :bars]
 end
 
 class Foo < ActiveRecord::Base
+  acts_as_seen :by => :users
+end
+
+class Bar < ActiveRecord::Base
   acts_as_seen :by => :users
 end
 
