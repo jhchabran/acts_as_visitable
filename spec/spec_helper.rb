@@ -52,3 +52,7 @@ end
 def valid_foo_attributes
   {:message => 'entertaining message !'}
 end
+
+def valid_bar_attributes
+  {:size => 4}
+end

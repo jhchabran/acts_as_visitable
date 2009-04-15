@@ -16,9 +16,23 @@ module ActsAsSeen
       end
       
       def declare_named_scopes
+        declare_seen_model
+        declare_which_saw
+      end
+      
+      def declare_seen_model
         self.observed_models_name.each do |model|
           named_scope "seen_#{model}", :include => :sights, :conditions => { 'sights.sightable_type' => model.classify }
         end
+      end
+      
+      def declare_which_saw
+        named_scope :which_saw, lambda { |object|
+          unless self.observed_models_klass.include? object.class 
+            raise ArgumentError.new("#{object.class.name} is not a sightable class") 
+          end
+          { :include => :sights, :conditions => { 'sights.sightable_type' => object.class.name, 'sights.sightable_id' => object.id} }
+        }
       end
     end
 
@@ -31,6 +45,11 @@ module ActsAsSeen
       
       def saw?(object)
         !!self.sights.find(:first, :conditions => {:sightable_id => object.id, :sightable_type => object.class.to_s})
+      end
+      
+      def viewed
+        # this is slow. I'll find a workaround later.
+        sights.collect(&:sightable)
       end
 
       def sightable?(object)

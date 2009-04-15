@@ -1,9 +1,12 @@
 Acts As Seen should be barely usable at this state.
 
-Warning : The current methods names really sucks / are not consistent, they are subject to heavy changes in a near future.
+Warning : 
+ - The current methods names really sucks / are not consistent, they are subject to heavy changes in a near future.
+ - I haven't bothered myself with perfs so far, don't expect blazing fast stuff yet 
 
 TODO 
-- more named scopes
-- destroying stuff is not handled correctly ( default behavior )
-- no configuration is available ( you might already have a sight model )
-- generators for migrations ( creating the Sight model )
+  - more named scopes
+  - destroying stuff is not handled correctly ( default behavior )
+  - no configuration is available ( you might already have a sight model )
+  - generators for migrations ( creating the Sight model )
+  - optimize finds, ViewerModel#viewed is currently way too slow for this kind of usage

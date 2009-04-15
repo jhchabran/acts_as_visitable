@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
+require 'benchmark'
 
 describe ActsAsSeen do
   before :each do
@@ -66,15 +67,55 @@ describe ActsAsSeen do
   it "should not let a user see something which is not a foo" do
     lambda { @user.saw(SomethingElse.new) }.should raise_error
   end
-  
+end
+  describe "Seen and Viewer selections" do
+    before :all do 
+      @user = User.create(valid_user_attributes)
+      @another_user = User.create(valid_user_attributes)
+      
+      @foo = Foo.create(valid_foo_attributes)
+      @another_foo = Foo.create(valid_foo_attributes)
+      
+      @bar = Bar.create(valid_bar_attributes)
+      @another_bar = Bar.create(valid_bar_attributes)
+      
+      @user.saw(@foo)
+      @user.saw(@another_foo)
+      
+      @user.saw(@bar)
+      @user.saw(@another_bar)
+      
+      @another_user.saw(@bar)
+      @another_user.saw(@foo)
+    end
   it "User should have named scopes to load seen foos and bars" do
     User.seen_foos.should_not be_empty
     User.seen_bars.should_not be_empty
   end
   
   it "Foo and Bar should have named scopes to load Users that sawed them" do
-    Foo.seen_by_users.should_not be_empty
-    Bar.seen_by_users.should_not be_empty
+    Foo.seen.should_not be_empty
+    Bar.seen.should_not be_empty
+  end
+  
+  it "should find all user that have seen a foo" do
+    User.which_saw(@foo).should have(2).items
+    User.which_saw(@bar).should have(2).items
+  end
+  
+  it "should find all foo and bars that have been seen by a user" do
+    @user.should be_saw(@foo)
+    @another_user.should be_saw(@foo)
+    Foo.seen_by(@user).should have(2).items
+    Bar.seen_by(@user).should have(2).items
+  end
+  
+  it "should find all content seen by a user" do
+    @user.viewed.should have(4).items
+  end
+  
+  it "should find all users which saw a foo" do
+    @foo.viewers.should have(2).items
   end
   
 end
