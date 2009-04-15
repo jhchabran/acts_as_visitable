@@ -1,5 +1,7 @@
 Acts As Seen should be barely usable at this state.
 
+Warning : The current methods names really sucks / are not consistent, they are subject to heavy changes in a near future.
+
 TODO 
 - more named scopes
 - destroying stuff is not handled correctly ( default behavior )
