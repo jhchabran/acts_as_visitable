@@ -17,10 +17,14 @@ describe ActsAsSeen do
   
   it "should let a foo be seen by a user" do
     lambda { @foo.seen_by(@user) }.should change(@user.sights, :count).by(1)
+    @foo.seen_by?(@user).should be_true
+    @user.saw?(@user).should be_true
   end
   
   it "should let a user see a foo " do
     lambda { @user.saw(@foo) }.should change(@user.sights, :count).by(1)
+    @user.saw?(@foo).should be_true
+    @foo.seen_by?(@foo).should be_true
   end
   
   it "should let a user see many foos" do
