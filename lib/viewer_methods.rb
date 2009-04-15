@@ -28,6 +28,10 @@ module ActsAsSeen
         #sights.create(:sightable => object)
         update_or_create_sight(:sightable_id => object.id, :sightable_type => object.class.to_s)
       end
+      
+      def saw?(object)
+        !!self.sights.find(:first, :conditions => {:sightable_id => object.id, :sightable_type => object.class.to_s})
+      end
 
       def sightable?(object)
         object_is_sightable(object) || class_is_sightable(object)

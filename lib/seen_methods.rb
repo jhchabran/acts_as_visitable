@@ -26,6 +26,10 @@ module ActsAsSeen
         update_or_create_sight(:viewer_id => viewer.id)
       end
       
+      def seen_by?(viewer)
+        !!self.sights.find(:first, :conditions => { :viewer_id => viewer.id})
+      end
+      
       def sightable_by?(object)
         object_is_viewable?(object) || class_is_viewable?(object)
       end
