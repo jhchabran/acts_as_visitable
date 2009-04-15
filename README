@@ -2,7 +2,8 @@ Acts As Seen should be barely usable at this state.
 
 Warning : 
  - The current methods names really sucks / are not consistent, they are subject to heavy changes in a near future.
- - I haven't bothered myself with perfs so far, don't expect blazing fast stuff yet 
+ - I haven't bothered myself with perfs so far, don't expect blazing fast stuff yet
+ - Self references are not supported yet
 
 TODO 
   - more named scopes
