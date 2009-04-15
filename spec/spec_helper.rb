@@ -24,7 +24,8 @@ class Bar < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
-  acts_as_viewer :of => [:foos, :bars]
+  acts_as_viewer :of => [:foos, :bars, :users]
+  acts_as_seen :by => :users
 end
 
 class Foo < ActiveRecord::Base

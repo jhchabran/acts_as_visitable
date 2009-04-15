@@ -38,8 +38,13 @@ module ActsAsSeen
 
     module InstanceMethods
       def seen_by(viewer)
+        return nil if viewer == self
         raise ArgumentError.new("#{viewer.class.name} can't view a #{self.class.name}") unless object_is_sightable_by? viewer
         update_or_create_sight(:viewer_id => viewer.id)
+      end
+      
+      def update_or_create_sight(opts={})
+        sights.find(:first, :conditions => opts).try(:tap) { |sight| sight.seen! } || sights.create(opts)
       end
 
       def seen_by?(viewer)

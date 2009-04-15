@@ -12,7 +12,7 @@ module ActsAsSeen
       end
 
       def declare_relationships
-        has_many :sights, :foreign_key => "viewer_id"
+        has_many :views, :foreign_key => "viewer_id", :class_name => "Sight"
       end
       
       def declare_named_scopes
@@ -22,7 +22,7 @@ module ActsAsSeen
       
       def declare_seen_model
         self.observed_models_name.each do |model|
-          named_scope "seen_#{model}", :include => :sights, :conditions => { 'sights.sightable_type' => model.classify }
+          named_scope "seen_#{model}", :include => :views, :conditions => { 'sights.sightable_type' => model.classify }
         end
       end
       
@@ -31,25 +31,30 @@ module ActsAsSeen
           unless self.observed_models_klass.include? object.class 
             raise ArgumentError.new("#{object.class.name} is not a sightable class") 
           end
-          { :include => :sights, :conditions => { 'sights.sightable_type' => object.class.name, 'sights.sightable_id' => object.id} }
+          { :include => :views, :conditions => { 'sights.sightable_type' => object.class.name, 'sights.sightable_id' => object.id} }
         }
       end
     end
 
     module InstanceMethods
+      def update_or_create_view(opts={})
+        views.find(:first, :conditions => opts).try(:tap) { |view| view.seen! } || views.create(opts)
+      end
+      
       def saw(object)
+        return nil if object == self
         raise ArgumentError.new("#{object.class} is not sightable by #{self.class.name}") unless object_is_sightable? object
-        #sights.create(:sightable => object)
-        update_or_create_sight(:sightable_id => object.id, :sightable_type => object.class.to_s)
+        #views.create(:sightable => object)
+        update_or_create_view(:sightable_id => object.id, :sightable_type => object.class.to_s)
       end
       
       def saw?(object)
-        !!self.sights.find(:first, :conditions => {:sightable_id => object.id, :sightable_type => object.class.to_s})
+        !!self.views.find(:first, :conditions => {:sightable_id => object.id, :sightable_type => object.class.to_s})
       end
       
       def viewed
         # this is slow. I'll find a workaround later.
-        sights.collect(&:sightable)
+        views.collect(&:sightable)
       end
 
       def sightable?(object)
