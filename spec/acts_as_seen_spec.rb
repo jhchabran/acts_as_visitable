@@ -139,4 +139,23 @@ describe ActsAsSeen do
     end
   end
   
+  describe 'serialization' do
+    before :all do 
+      @user = User.create valid_user_attributes
+      @foo = Foo.create valid_foo_attributes
+      @another_foo = Foo.create valid_foo_attributes
+    end
+    
+    it "should have a seen flag when serialized with 'seen_by' option" do
+      @user.saw(@foo)
+      @foo.to_json(:seen_by => @user).should include 'seen'
+      @foo.to_json.should_not include 'seen'
+    end
+    
+    it "should have many seen flags when serializing a collection" do
+      @user.saw(@foo)
+      @user.saw(@another_foo)
+      [@foo, @another_foo].to_json(:seen_by => @user).should include('seen')
+    end
+  end
 end

@@ -62,6 +62,14 @@ module ActsAsSeen
       def class_is_sightable_by?(klass)
         klass == self.seen_by_model_klass
       end
+      
+      def to_json_with_seen_by_attribute(opts={})
+        unless opts.has_key? :seen_by
+          self.to_json_without_seen_by_attribute
+        else
+          self.to_json_without_seen_by_attribute(opts).sub(/\}$/, ",\"seen\":#{self.seen_by?(opts[:seen_by])}}") 
+        end
+      end
     end
 
     def self.included(receiver)

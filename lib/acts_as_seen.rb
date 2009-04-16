@@ -17,6 +17,7 @@ module ActsAsSeen
       class_inheritable_reader :seen_by_model_klass
       
       read_options(opts)
+      alias_method_chain :to_json, :seen_by_attribute
     end
     
     def acts_as_viewer(opts={})
