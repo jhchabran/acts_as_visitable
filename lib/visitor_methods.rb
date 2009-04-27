@@ -1,5 +1,5 @@
-module ActsAsSeen
-  module ViewerMethods
+module ActsAsVisitable
+  module VisitorMethods
     module ClassMethods
       protected
       def read_options(opts)

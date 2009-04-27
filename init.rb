@@ -1,2 +1,2 @@
-require 'acts_as_seen'
-ActiveRecord::Base.send(:include, ActsAsSeen)
+require 'acts_as_visitable'
+ActiveRecord::Base.send(:include, ActsAsVisitable)

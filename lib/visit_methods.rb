@@ -1,5 +1,5 @@
-module ActsAsSeen
-  module SightMethods
+module ActsAsVisitable
+  module VisitMethods
     module ClassMethods
 
     end

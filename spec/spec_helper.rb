@@ -25,22 +25,22 @@ end
 
 class User < ActiveRecord::Base
   acts_as_viewer :of => [:foos, :bars, :users]
-  acts_as_seen :by => :users
+  acts_as_visitable :by => :users
 end
 
 class Foo < ActiveRecord::Base
-  acts_as_seen :by => :users
+  acts_as_visitable :by => :users
 end
 
 class Bar < ActiveRecord::Base
-  acts_as_seen :by => :users
+  acts_as_visitable :by => :users
 end
 
 class Sight < ActiveRecord::Base
   belongs_to :sightable, :polymorphic => true
   belongs_to :viewer, :class_name => "User", :foreign_key => "viewer_id"
   
-  include ActsAsSeen::SightMethods
+  include ActsAsVisitable::VisitMethods
 end
 
 class SomethingElse < ActiveRecord::Base

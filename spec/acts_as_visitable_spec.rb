@@ -1,14 +1,13 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'benchmark'
 
-describe ActsAsSeen do
+describe ActsAsVisitable do
   describe "Basic operations" do 
     before :each do
       @user = User.create(valid_user_attributes)
       @foo = Foo.create(valid_foo_attributes)
     end
-    it "should include ActsAsSeen in Foo" do
-      Foo.should include(ActsAsSeen)
+    it "should include ActsAsVisitable in Foo" do
+      Foo.should include(ActsAsVisitable)
     end
 
     it "should declare a has_many relationship between Foo and Sight" do
@@ -148,8 +147,8 @@ describe ActsAsSeen do
     
     it "should have a seen flag when serialized with 'seen_by' option" do
       @user.saw(@foo)
-      @foo.to_json(:seen_by => @user).should include 'seen'
-      @foo.to_json.should_not include 'seen'
+      @foo.to_json(:seen_by => @user).should include('seen')
+      @foo.to_json.should_not include('seen')
     end
     
     it "should have many seen flags when serializing a collection" do

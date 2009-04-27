@@ -1,17 +1,17 @@
-require 'seen_methods'
-require 'viewer_methods'
+require 'visited_methods'
+require 'visitor_methods'
 require 'shared_methods'
-require 'sight_methods'
+require 'visit_methods'
 
-module ActsAsSeen
+module ActsAsVisitable
   def self.included(base)
-    base.extend ActsAsSeenMethods
+    base.extend ActsAsVisitableMethods
   end
 
-  module ActsAsSeenMethods
-    def acts_as_seen(opts={})
+  module ActsAsVisitableMethods
+    def acts_as_visitable(opts={})
       include SharedMethods
-      include SeenMethods
+      include VisitedMethods
       
       class_inheritable_reader :seen_by_model_name
       class_inheritable_reader :seen_by_model_klass
@@ -22,7 +22,7 @@ module ActsAsSeen
     
     def acts_as_viewer(opts={})
       include SharedMethods
-      include ViewerMethods
+      include VisitorMethods
       
       class_inheritable_reader :observed_models_name
       class_inheritable_reader :observed_models_klass

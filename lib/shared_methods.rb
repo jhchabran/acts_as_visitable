@@ -1,4 +1,4 @@
-module ActsAsSeen
+module ActsAsVisitable
   module SharedMethods
     module InstanceMethods 
       def update_or_create_sight(opts={})
