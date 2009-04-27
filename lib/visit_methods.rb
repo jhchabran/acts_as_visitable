@@ -5,12 +5,12 @@ module ActsAsVisitable
     end
 
     module InstanceMethods
-      def seen
-        self.seen_at = Time.now
+      def visit
+        self.visited_at = Time.now
       end
       
-      def seen!
-        seen
+      def visit!
+        visit
         save!
       end
     end

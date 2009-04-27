@@ -4,69 +4,68 @@ module ActsAsVisitable
       protected
       def read_options(opts)
         raise ArgumentError unless opts[:of]
-        write_inheritable_attribute :observed_models_name, Array(opts[:of]).collect(&:to_s)
-        write_inheritable_attribute :observed_models_klass, self.observed_models_name.collect { |e| e.classify.constantize }
+        write_inheritable_attribute :visitable_models_name, Array(opts[:of]).collect(&:to_s)
+        write_inheritable_attribute :visitable_models_klass, self.visitable_models_name.collect { |e| e.classify.constantize }
         
         declare_relationships
         declare_named_scopes
       end
 
       def declare_relationships
-        has_many :views, :foreign_key => "viewer_id", :class_name => "Sight"
+        has_many :visited_objects, :foreign_key => "visitor_id", :class_name => "Visit"
       end
       
       def declare_named_scopes
-        declare_seen_model
+        declare_visitable_model
         declare_which_saw
       end
       
-      def declare_seen_model
-        self.observed_models_name.each do |model|
-          named_scope "seen_#{model}", :include => :views, :conditions => { 'sights.sightable_type' => model.classify }
+      def declare_visitable_model
+        self.visitable_models_name.each do |model|
+          named_scope "visited_#{model}", :include => :visited_objects, :conditions => { 'visits.visitable_type' => model.classify }
         end
       end
       
       def declare_which_saw
-        named_scope :which_saw, lambda { |object|
-          unless self.observed_models_klass.include? object.class 
-            raise ArgumentError.new("#{object.class.name} is not a sightable class") 
+        named_scope :which_visited, lambda { |object|
+          unless self.visitable_models_klass.include? object.class 
+            raise ArgumentError.new("#{object.class.name} is not a visitable class") 
           end
-          { :include => :views, :conditions => { 'sights.sightable_type' => object.class.name, 'sights.sightable_id' => object.id} }
+          { :include => :visited_objects, :conditions => { 'visits.visitable_type' => object.class.name, 'visits.visitable_id' => object.id} }
         }
       end
     end
 
     module InstanceMethods
-      def update_or_create_view(opts={})
-        views.find(:first, :conditions => opts).try(:tap) { |view| view.seen! } || views.create(opts)
+      def update_or_create_visit(opts={})
+        visited_objects.find(:first, :conditions => opts).try(:tap) { |visit| visit.visit! } || visited_objects.create(opts)
       end
       
-      def saw(object)
+      def visit(object)
         return nil if object == self
-        raise ArgumentError.new("#{object.class} is not sightable by #{self.class.name}") unless object_is_sightable? object
-        #views.create(:sightable => object)
-        update_or_create_view(:sightable_id => object.id, :sightable_type => object.class.to_s)
+        raise ArgumentError.new("#{object.class} is not visitable by #{self.class.name}") unless object_is_visitable? object
+        update_or_create_visit(:visitable_id => object.id, :visitable_type => object.class.to_s)
+      end
+
+      def visited?(object)
+        !!self.visited_objects.find(:first, :conditions => {:visitable_id => object.id, :visitable_type => object.class.to_s})
       end
       
-      def saw?(object)
-        !!self.views.find(:first, :conditions => {:sightable_id => object.id, :sightable_type => object.class.to_s})
-      end
-      
-      def viewed
+      def visited
         # this is slow. I'll find a workaround later.
-        views.collect(&:sightable)
+        visited_objects.collect(&:visitable)
       end
 
-      def sightable?(object)
-        object_is_sightable(object) || class_is_sightable(object)
+      def visitable?(object)
+        object_is_visitable(object) || class_is_visitable(object)
       end
 
-      def class_is_sightable?(klass)
-        self.observed_models_klass.include? klass
+      def class_is_visitable?(klass)
+        self.visitable_models_klass.include? klass
       end
 
-      def object_is_sightable?(object)
-        self.observed_models_klass.include? object.class
+      def object_is_visitable?(object)
+        self.visitable_models_klass.include? object.class
       end
     end
     

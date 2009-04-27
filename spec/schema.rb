@@ -11,10 +11,10 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :size
   end
   
-  create_table "sights", :force => true do |t|
-    t.string :sightable_type
-    t.integer :sightable_id
-    t.integer :viewer_id
-    t.datetime :seen_at, :default => Time.now
+  create_table "visits", :force => true do |t|
+    t.string :visitable_type
+    t.integer :visitable_id
+    t.integer :visitor_id
+    t.datetime :visited_at, :default => Time.now
   end
 end

@@ -1,9 +1,9 @@
 module ActsAsVisitable
   module SharedMethods
     module InstanceMethods 
-      def update_or_create_sight(opts={})
-        sights.find(:first, :conditions => opts).try(:tap) { |sight| sight.seen! } || sights.create(opts)
-      end
+      #def update_or_create_visit(opts={})
+      #  visits.find(:first, :conditions => opts).try(:tap) { |visit| visit.seen! } || visits.create(opts)
+      #end
     end
     
     module ClassMethods

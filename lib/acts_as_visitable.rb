@@ -13,19 +13,19 @@ module ActsAsVisitable
       include SharedMethods
       include VisitedMethods
       
-      class_inheritable_reader :seen_by_model_name
-      class_inheritable_reader :seen_by_model_klass
+      class_inheritable_reader :visited_by_model_name
+      class_inheritable_reader :visited_by_model_klass
       
       read_options(opts)
-      alias_method_chain :to_json, :seen_by_attribute
+      alias_method_chain :to_json, :visited_by_attribute
     end
     
-    def acts_as_viewer(opts={})
+    def acts_as_visitor(opts={})
       include SharedMethods
       include VisitorMethods
       
-      class_inheritable_reader :observed_models_name
-      class_inheritable_reader :observed_models_klass
+      class_inheritable_reader :visitable_models_name
+      class_inheritable_reader :visitable_models_klass
       
       read_options(opts)
     end

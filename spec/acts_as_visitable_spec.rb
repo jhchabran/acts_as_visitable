@@ -10,61 +10,61 @@ describe ActsAsVisitable do
       Foo.should include(ActsAsVisitable)
     end
 
-    it "should declare a has_many relationship between Foo and Sight" do
-      Foo.reflections.should include(:sights)
-      Foo.reflections[:sights].macro.should be_eql(:has_many)
+    it "should declare a has_many relationship between Foo and Visit" do
+      Foo.reflections.should include(:visits)
+      Foo.reflections[:visits].macro.should be_eql(:has_many)
     end
 
-    it "should let a foo be seen by a user" do
-      lambda { @foo.seen_by(@user) }.should change(@user.views, :count).by(1)
-      @foo.seen_by?(@user).should be_true
-      @foo.seen_by?(User.create(valid_user_attributes)).should be_false
-      @user.saw?(@foo).should be_true
+    it "should let a foo be visited by a user" do
+      lambda { @foo.visited_by(@user) }.should change(@user.visited_objects, :count).by(1)
+      @foo.visited_by?(@user).should be_true
+      @foo.visited_by?(User.create(valid_user_attributes)).should be_false
+      @user.visited?(@foo).should be_true
     end
 
-    it "should let a user see a foo " do
-      lambda { @user.saw(@foo) }.should change(@user.views, :count).by(1)
-      @user.saw?(@foo).should be_true
-      @user.saw?(Foo.create(valid_foo_attributes)).should be_false
-      @foo.seen_by?(@user).should be_true
+    it "should let a user visit a foo " do
+      lambda { @user.visit(@foo) }.should change(@user.visited_objects, :count).by(1)
+      @user.visited?(@foo).should be_true
+      @user.visited?(Foo.create(valid_foo_attributes)).should be_false
+      @foo.visited_by?(@user).should be_true
     end
 
-    it "should let a user see many foos" do
-      lambda { @user.saw(@foo) }.should change(@user.views, :count).by(1)
-      lambda { @user.saw(Foo.create(valid_foo_attributes)) }.should change(@user.views, :count).by(1)
+    it "should let a user visit many foos" do
+      lambda { @user.visit(@foo) }.should change(@user.visited_objects, :count).by(1)
+      lambda { @user.visit(Foo.create(valid_foo_attributes)) }.should change(@user.visited_objects, :count).by(1)
     end
 
-    it "should let a foo be seen by many users" do
-      lambda { @foo.seen_by(@user) }.should change(@foo.sights, :count).by(1)
-      lambda { @foo.seen_by(User.create(valid_user_attributes)) }.should change(@foo.sights, :count).by(1)
+    it "should let a foo be visited by many users" do
+      lambda { @foo.visited_by(@user) }.should change(@foo.visits, :count).by(1)
+      lambda { @foo.visited_by(User.create(valid_user_attributes)) }.should change(@foo.visits, :count).by(1)
     end
 
-    it "should let a user see a Foo and a Lambda" do
+    it "should let a user visit a Foo and a Lambda" do
       lambda do
-        @user.saw(@foo)
-        @user.saw(Bar.create(:size => 3))
-      end.should change(Sight, :count).by(2)
+        @user.visit(@foo)
+        @user.visit(Bar.create(:size => 3))
+      end.should change(Visit, :count).by(2)
     end
 
-    it "should not create a sight where one already exists (user saw a foo)" do
-      lambda { @user.saw(@foo); @user.saw(@foo) }.should change(@user.views, :count).by(1)
+    it "should not create a Visit where one already exists (user visited a foo)" do
+      lambda { @user.visit(@foo); @user.visit(@foo) }.should change(@user.visited_objects, :count).by(1)
     end
 
-    it "should not create a sight where one already exists (foo seen by a user)" do
-      lambda { @foo.seen_by(@user); @foo.seen_by(@user) }.should change(@user.views, :count).by(1)
+    it "should not create a Visit where one already exists (foo visited by a user)" do
+      lambda { @foo.visited_by(@user); @foo.visited_by(@user) }.should change(@user.visited_objects, :count).by(1)
     end
 
     it "should have a timestamp" do
-      @user.saw(@foo).seen_at.should_not be_nil
+      @user.visit(@foo).visited_at.should_not be_nil
     end
 
-    it "should update time when saw again" do
+    it "should update timestamp when visited again" do
       # waiting for one second in specs is tiring 
       # @user.saw(@foo).tap{ sleep 1 }.seen_at.should_not be_eql(@user.saw(@foo).seen_at)
     end
 
-    it "should not let a user see something which is not a foo" do
-      lambda { @user.saw(SomethingElse.new) }.should raise_error
+    it "should not let a user visit something which is not a foo" do
+      lambda { @user.visit(SomethingElse.new) }.should raise_error
     end
   end
 
@@ -79,45 +79,45 @@ describe ActsAsVisitable do
       @bar = Bar.create(valid_bar_attributes)
       @another_bar = Bar.create(valid_bar_attributes)
 
-      @user.saw(@foo)
-      @user.saw(@another_foo)
+      @user.visit(@foo)
+      @user.visit(@another_foo)
 
-      @user.saw(@bar)
-      @user.saw(@another_bar)
+      @user.visit(@bar)
+      @user.visit(@another_bar)
 
-      @another_user.saw(@bar)
-      @another_user.saw(@foo)
+      @another_user.visit(@bar)
+      @another_user.visit(@foo)
     end
     
-    it "User should have named scopes to load seen foos and bars" do
-      User.seen_foos.should_not be_empty
-      User.seen_bars.should_not be_empty
+    it "User should have named scopes to load visited foos and bars" do
+      User.visited_foos.should_not be_empty
+      User.visited_bars.should_not be_empty
     end
 
-    it "Foo and Bar should have named scopes to load Users that sawed them" do
-      Foo.seen.should_not be_empty
-      Bar.seen.should_not be_empty
+    it "Foo and Bar should have named scopes to get users that visited them" do
+      Foo.visitors.should_not be_empty
+      Bar.visitors.should_not be_empty
     end
 
-    it "should find all user that have seen a foo" do
-      User.which_saw(@foo).should have(2).items
-      User.which_saw(@bar).should have(2).items
+    it "should find all user that have visited a foo" do
+      User.which_visited(@foo).should have(2).items
+      User.which_visited(@bar).should have(2).items
     end
 
-    it "should find all foo and bars that have been seen by a user" do
-      @user.saw?(@foo).should be_true
-      @another_user.saw?(@foo).should be_true
+    it "should find all foo and bars that have been visited by a user" do
+      @user.visited?(@foo).should be_true
+      @another_user.visited?(@foo).should be_true
       
-      Foo.seen_by(@user).should have(2).items
-      Bar.seen_by(@user).should have(2).items
+      Foo.visited_by(@user).should have(2).items
+      Bar.visited_by(@user).should have(2).items
     end
 
-    it "should find all content seen by a user" do
-      @user.viewed.should have(4).items
+    it "should find all content visited by a user" do
+      @user.visited.should have(4).items
     end
 
-    it "should find all users which saw a foo" do
-      @foo.viewers.should have(2).items
+    it "should find all users which visited a foo" do
+      @foo.visitors.should have(2).items
     end
   end
   
@@ -127,34 +127,34 @@ describe ActsAsVisitable do
       @another_user = User.create valid_user_attributes
     end
     
-    it "should let a user see another user" do
-      @user.saw(@another_user)
-      @user.saw?(@another_user).should be_true
-      @another_user.should be_seen_by(@user)
+    it "should let a user visit another user" do
+      @user.visit(@another_user)
+      @user.visited?(@another_user).should be_true
+      @another_user.should be_visited_by(@user)
     end
     
-    it "should not let a user see himself" do
-      @user.saw(@user).should be_nil
+    it "should not let a user visit himself" do
+      @user.visit(@user).should be_nil
     end
   end
   
-  describe 'serialization' do
+  describe 'Serialization' do
     before :all do 
       @user = User.create valid_user_attributes
       @foo = Foo.create valid_foo_attributes
       @another_foo = Foo.create valid_foo_attributes
     end
     
-    it "should have a seen flag when serialized with 'seen_by' option" do
-      @user.saw(@foo)
-      @foo.to_json(:seen_by => @user).should include('seen')
-      @foo.to_json.should_not include('seen')
+    it "should have a visited flag when serialized with 'seen_by' option" do
+      @user.visit(@foo)
+      @foo.to_json(:visited_by => @user).should include('visited')
+      @foo.to_json.should_not include('visited')
     end
     
-    it "should have many seen flags when serializing a collection" do
-      @user.saw(@foo)
-      @user.saw(@another_foo)
-      [@foo, @another_foo].to_json(:seen_by => @user).should include('seen')
+    it "should have many visited flags when serializing a collection" do
+      @user.visit(@foo)
+      @user.visit(@another_foo)
+      [@foo, @another_foo].to_json(:visited_by => @user).should include('visited')
     end
   end
 end
