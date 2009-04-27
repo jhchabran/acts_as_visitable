@@ -7,5 +7,6 @@ TODO
   - more named scopes
   - destroying stuff is not handled correctly ( default behavior )
   - no configuration is available ( you might already have a sight model )
-  - generators for migrations ( creating the Sight model )
+  - generators for migrations ( creating the Visit model )
   - optimize finds, VisitorModel#visited is currently way too slow for this kind of usage
+  - wrap Visit model declaration inside the library
