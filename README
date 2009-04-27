@@ -1,12 +1,11 @@
-Acts As Seen should be barely usable at this state.
+Acts As Visitable should be barely usable at this state.
 
 Warning : 
- - The current methods names really sucks / are not consistent, they WILL be changed in a near future.
- - I haven't bothered myself with perfs so far, don't expect blazing fast stuff yet
+ - I haven't bothered myself with perfs so far, don't expect fast stuff yet
 
 TODO 
   - more named scopes
   - destroying stuff is not handled correctly ( default behavior )
   - no configuration is available ( you might already have a sight model )
   - generators for migrations ( creating the Sight model )
-  - optimize finds, ViewerModel#viewed is currently way too slow for this kind of usage
+  - optimize finds, VisitorModel#visited is currently way too slow for this kind of usage
